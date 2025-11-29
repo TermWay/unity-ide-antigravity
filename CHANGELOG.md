@@ -1,5 +1,23 @@
 # Code Editor Package for Visual Studio Code
 
+## [1.0.0] - 2025-11-29
+
+### Added
+- **Antigravity Support:** Added logic to discover and register `Antigravity.exe` (Windows) and `Antigravity.app` (macOS) as a supported external script editor.
+- **Namespace Refactor:** Renamed all namespaces from `VSCodeEditor` to `Antigravity.Editor` to prevent conflicts with the legacy `com.unity.ide.vscode` package.
+- **Project Generation:** Enabled .csproj and .sln generation specifically for Antigravity, bypassing the need for Microsoft's proprietary "C# Dev Kit".
+
+### Changed
+- Forked from `com.unity.ide.vscode` version 1.2.5.
+- Changed package name to `com.termway.ide.antigravity`.
+- Changed display name to "Antigravity Editor".
+- Updated `package.json` dependencies (removed test framework dependencies).
+
+### Fixed
+- Fixed a case-sensitivity bug in `TryGetInstallationForPath` that caused `Antigravity.exe` to be rejected during validation.
+
+## Legacy History (com.unity.ide.vscode)
+
 ## [1.2.5] - 2022-02-07
 
 - Introduce OnGeneratedCSProjectFiles, OnGeneratedCSProject and OnGeneratedSlnSolution callbacks.
