@@ -11,7 +11,7 @@ It is a **fork** of the legacy `com.unity.ide.vscode` package, patched specifica
 Because Antigravity is a VS Code fork, it cannot use the Microsoft "C# Dev Kit". 
 To get IntelliSense working, you **must**:
 1. Install this package in Unity.
-2. Install the **C# (OmniSharp)** extension (by `muhammad-sammy`) inside Antigravity.
+2. Install the **[free-csharp-vscode](https://open-vsx.org/extension/muhammad-sammy/csharp)** extension (by `muhammad-sammy`) inside Antigravity.
 
 ## Installation
 
