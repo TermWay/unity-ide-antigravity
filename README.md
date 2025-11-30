@@ -33,3 +33,13 @@ After installing:
 
 <img src="https://raw.githubusercontent.com/TermWay/unity-ide-antigravity/main/Documentation~/Images/antigravity-setup.png" width="600" alt="Antigravity Setup">
 <img src="https://raw.githubusercontent.com/TermWay/unity-ide-antigravity/main/Documentation~/Images/antigravity-preview.png" width="600" alt="Antigravity Code Preview">
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).
+
+Copyright (c) 2025 Termway
+
+### Credits
+This project is based on the Unity IDE VSCode package.  
+Original License: [com.unity.ide.vscode@1.2 License](https://docs.unity3d.com/Packages/com.unity.ide.vscode@1.2/license/LICENSE.html)
