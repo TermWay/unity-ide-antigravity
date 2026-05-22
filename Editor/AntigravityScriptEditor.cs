@@ -20,8 +20,11 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
         IDiscovery m_Discoverability;
         IGenerator m_ProjectGeneration;
 
-        // ONLY look for Antigravity. We don't care about VS Code here.
+        // ONLY look for Antigravity / Antigravity IDE. We don't care about VS Code here.
         static readonly string[] k_SupportedFileNames = { 
+            "antigravityide.exe",
+            "antigravityide.app",
+            "antigravityide",
             "antigravity.exe", 
             "antigravity.app", 
             "antigravity"
@@ -85,9 +88,11 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
                 return false;
             }
 
+            var name = filename.Contains("ide") ? "Antigravity IDE" : "Antigravity";
+
             installation = new CodeEditor.Installation
             {
-                Name = "Antigravity",
+                Name = name,
                 Path = editorPath
             };
 

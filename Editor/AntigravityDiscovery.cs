@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,16 +31,21 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
             string[] possiblePaths =
 #if UNITY_EDITOR_OSX
             {
+                "/Applications/Antigravity IDE.app",
                 "/Applications/Antigravity.app",
                 "/Applications/Visual Studio Code.app"
             };
 #elif UNITY_EDITOR_WIN
             {
+                GetLocalAppData() + @"/Programs/Antigravity IDE/Antigravity IDE.exe",
+                GetProgramFiles() + @"/Antigravity IDE/Antigravity IDE.exe",
                 GetLocalAppData() + @"/Programs/Antigravity/Antigravity.exe",
                 GetProgramFiles() + @"/Antigravity/Antigravity.exe",
             };
 #else
             {
+                "/usr/bin/antigravity-ide",
+                "/bin/antigravity-ide",
                 "/usr/bin/antigravity",
                 "/bin/antigravity"
             };
@@ -51,7 +56,7 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
             {
                 m_Installations = existingPaths.Select(path => new CodeEditor.Installation
                 {
-                    Name = "Antigravity", // Always name it Antigravity
+                    Name = path.Contains("IDE") || path.Contains("ide") ? "Antigravity IDE" : "Antigravity",
                     Path = path
                 }).ToList();
             }
