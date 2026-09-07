@@ -1,5 +1,16 @@
 # Code Editor Package for Visual Studio Code
 
+## [1.1.0] - 2026-09-07
+
+### Fixed
+- **Antigravity 2.0 split (Google I/O, 2026-05-19):** Google split Antigravity into two desktop apps that share the same VS Code-fork shell: the standalone **Antigravity** agent app (no code editor) and **Antigravity IDE** (the editor). The package used to match the bare `Antigravity` executable, so Unity ended up launching the agent app on every script double-click. Only Antigravity IDE is now discovered and accepted.
+
+### Changed
+- **Discovery:** Looks for `Antigravity IDE.exe` (Windows), `Antigravity IDE*.app` (macOS) and `antigravity-ide[-insiders]` (Linux) in their default install locations. The bare `Antigravity` locations are no longer offered as script editors.
+- **Validation:** A manually selected path (Browse...) must have an Antigravity IDE file name, and its `resources/app/package.json` manifest `name` is checked so the agent app is rejected even when pointed at directly.
+- **Migration:** When the saved External Script Editor still points at the bare `Antigravity` app and Antigravity IDE is installed, the selection is switched to Antigravity IDE automatically (a message is logged in the Console). When Antigravity IDE is not installed, a warning is logged instead.
+- The External Tools dropdown entry is now named **Antigravity IDE** (and **Antigravity IDE - Insider** for prerelease builds) instead of the ambiguous **Antigravity**.
+
 ## [1.0.0] - 2025-11-29
 
 ### Added

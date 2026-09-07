@@ -20,14 +20,8 @@ namespace Antigravity.Editor
         IDiscovery m_Discoverability;
         IGenerator m_ProjectGeneration;
 
-        // Normalized to match lowercase and space-stripped lookups
-        static readonly string[] k_SupportedFileNames = {
-            "antigravityide.exe",
-            "antigravityide.app",
-            "antigravityide",
-            "antigravity.app",
-            "antigravity"
-        };
+        // Logged at most once per editor session when the agent app is selected but no IDE is installed.
+        const string k_MissingIdeWarningKey = "antigravity_ide_missing_warning_shown";
 
         static bool IsOSX => Application.platform == RuntimePlatform.OSXEditor;
         static string DefaultApp => EditorPrefs.GetString("kScriptsDefaultApp");
@@ -74,10 +68,9 @@ namespace Antigravity.Editor
 
         public bool TryGetInstallationForPath(string editorPath, out CodeEditor.Installation installation)
         {
-            var lowerCasePath = editorPath.ToLower();
-            var filename = Path.GetFileName(lowerCasePath).Replace(" ", "");
-
-            if (!k_SupportedFileNames.Contains(filename))
+            // Only Antigravity IDE is accepted. Since Antigravity 2.0 the bare "Antigravity" executable
+            // is the standalone agent app, which has no code editor, so it must not be registered here.
+            if (!AntigravityDiscovery.IsAntigravityIde(editorPath))
             {
                 installation = default;
                 return false;
@@ -85,7 +78,7 @@ namespace Antigravity.Editor
 
             installation = new CodeEditor.Installation
             {
-                Name = "Antigravity",
+                Name = AntigravityDiscovery.GetInstallationName(editorPath),
                 Path = editorPath
             };
 
@@ -233,18 +226,38 @@ namespace Antigravity.Editor
             var editor = new AntigravityScriptEditor(new AntigravityDiscovery(), new ProjectGeneration(Directory.GetParent(Application.dataPath).FullName));
             CodeEditor.Register(editor);
 
-            if (IsAntigravityInstallation(CodeEditor.CurrentEditorInstallation))
+            var currentEditorPath = CodeEditor.CurrentEditorInstallation;
+            if (AntigravityDiscovery.IsAntigravityIde(currentEditorPath))
             {
                 editor.CreateIfDoesntExist();
             }
+            else if (AntigravityDiscovery.IsStandaloneAntigravityApp(currentEditorPath))
+            {
+                // Selected before the Antigravity 2.0 split (or picked by hand): "Antigravity" is now the
+                // agent app, not the editor. Unity would otherwise keep launching it for every script.
+                EditorApplication.delayCall += () => editor.MigrateToAntigravityIde(currentEditorPath);
+            }
         }
 
-        static bool IsAntigravityInstallation(string path)
+        void MigrateToAntigravityIde(string previousEditorPath)
         {
-            if (string.IsNullOrEmpty(path)) return false;
-            var lowerCasePath = path.ToLower();
-            var filename = Path.GetFileName(lowerCasePath).Replace(" ", "");
-            return k_SupportedFileNames.Contains(filename);
+            var ide = Installations.FirstOrDefault();
+            if (string.IsNullOrEmpty(ide.Path))
+            {
+                if (!SessionState.GetBool(k_MissingIdeWarningKey, false))
+                {
+                    SessionState.SetBool(k_MissingIdeWarningKey, true);
+                    UnityEngine.Debug.LogWarning(
+                        $"[Antigravity IDE] The selected External Script Editor '{previousEditorPath}' is the standalone Antigravity agent app, " +
+                        "which no longer contains a code editor. Install Antigravity IDE (https://antigravity.google/) and select it in " +
+                        "Edit > Preferences > External Tools.");
+                }
+                return;
+            }
+
+            CodeEditor.SetExternalScriptEditor(ide.Path);
+            UnityEngine.Debug.Log($"[Antigravity IDE] External Script Editor switched from '{previousEditorPath}' (Antigravity agent app) to '{ide.Path}'.");
+            CreateIfDoesntExist();
         }
 
         public void Initialize(string editorInstallationPath) { }
