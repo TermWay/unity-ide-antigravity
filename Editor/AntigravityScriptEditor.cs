@@ -6,24 +6,26 @@ using UnityEditor;
 using UnityEngine;
 using Unity.CodeEditor;
 
-namespace Antigravity.Editor // <--- NEW NAMESPACE
+namespace Antigravity.Editor
 {
     [InitializeOnLoad]
-    public class AntigravityScriptEditor : IExternalCodeEditor // <--- NEW CLASS NAME
+    public class AntigravityScriptEditor : IExternalCodeEditor
     {
         const string antigravity_argument = "antigravity_arguments"; // Unique pref keys
         const string antigravity_extension = "antigravity_userExtensions";
-        
+
         static readonly GUIContent k_ResetArguments = EditorGUIUtility.TrTextContent("Reset argument");
         string m_Arguments;
 
         IDiscovery m_Discoverability;
         IGenerator m_ProjectGeneration;
 
-        // ONLY look for Antigravity. We don't care about VS Code here.
-        static readonly string[] k_SupportedFileNames = { 
-            "antigravity.exe", 
-            "antigravity.app", 
+        // Normalized to match lowercase and space-stripped lookups
+        static readonly string[] k_SupportedFileNames = {
+            "antigravityide.exe",
+            "antigravityide.app",
+            "antigravityide",
+            "antigravity.app",
             "antigravity"
         };
 
@@ -74,10 +76,6 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
         {
             var lowerCasePath = editorPath.ToLower();
             var filename = Path.GetFileName(lowerCasePath).Replace(" ", "");
-            var installations = Installations;
-
-            // Debugging
-            // UnityEngine.Debug.Log($"[Antigravity] Checking: {filename}");
 
             if (!k_SupportedFileNames.Contains(filename))
             {
@@ -102,7 +100,6 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
                 Arguments = DefaultArgument;
             }
 
-            // Force these to be visible since we know we are Antigravity
             EditorGUILayout.LabelField("Generate .csproj files for:");
             EditorGUI.indentLevel++;
             SettingsButton(ProjectGenerationFlag.Embedded, "Embedded packages", "");
@@ -233,7 +230,6 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
 
         static AntigravityScriptEditor()
         {
-            // Register as a completely new Editor
             var editor = new AntigravityScriptEditor(new AntigravityDiscovery(), new ProjectGeneration(Directory.GetParent(Application.dataPath).FullName));
             CodeEditor.Register(editor);
 
