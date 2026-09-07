@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.CodeEditor;
 using UnityEngine;
 
-namespace Antigravity.Editor // <--- NEW NAMESPACE
+namespace Antigravity.Editor
 {
     public interface IDiscovery
     {
@@ -24,7 +24,7 @@ namespace Antigravity.Editor // <--- NEW NAMESPACE
     /// manually. The two apps are told apart by their file name and, as a second line of defence,
     /// by the "name" field of their "resources/app/package.json" manifest.
     /// </summary>
-    public class AntigravityDiscovery : IDiscovery // <--- NEW CLASS NAME
+    public class AntigravityDiscovery : IDiscovery
     {
         const string k_IdeDisplayName = "Antigravity IDE";
 
